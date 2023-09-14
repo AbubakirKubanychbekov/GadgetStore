@@ -1,12 +1,14 @@
 package boss.api;
 
 import boss.dto.request.ProductRequest;
+import boss.dto.response.PaginationResponse;
 import boss.dto.response.ProductResponse;
-import boss.dto.response.ProductWithCommentsResponse;
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.services.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -23,8 +25,9 @@ public class ProductApi {
 
     private final ProductService productService;
 
-    @GetMapping("/getAll")
+    @GetMapping("/getAll")  //  Такыр иштебей жатат
     @PermitAll
+    @Operation(summary = "Get All",description = "Get All products info")
     public List<ProductResponse> findAllProducts() {
         return productService.getAllProducts();
     }
@@ -41,6 +44,7 @@ public class ProductApi {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{brandId}")
+    @Operation(summary = "Save",description = "To save  fill all the fields!")
     public SimpleResponse save(@PathVariable Long brandId,
                                @RequestBody ProductRequest productRequest) {
         return productService.save(productRequest, brandId);
@@ -48,7 +52,8 @@ public class ProductApi {
 
 
     @GetMapping("/{id}")
-    @Secured("USER")
+    @Secured({"USER","ADMIN"})
+    @Operation(summary = "Get product by ID",description = "To get by ID fill ID!")
     public ProductResponse getById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
@@ -56,21 +61,32 @@ public class ProductApi {
 
     @Secured("ADMIN")
     @PutMapping("/{id}")
+    @Operation(summary = "Update",description = "To update fill all the fields!")
     public SimpleResponse update(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
         return productService.update(id, productRequest);
     }
 
 
-    @GetMapping("/details/{productId}")
-    public ResponseEntity<ProductWithCommentsResponse> getProductById(@PathVariable Long productId) {
-        ProductWithCommentsResponse response = productService.getProductByIdAndComments(productId);
-
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleted",description = "To delete  fill all the fields!")
+    public SimpleResponse deleteProduct(@PathVariable Long id){
+        return productService.deleteProduct(id);
     }
 
+
+    @PermitAll
+    @GetMapping("/pagination")
+    @Operation(summary = "Pagination",description = "To pagination!")
+    public ResponseEntity<PaginationResponse> paginationResponse(
+            @RequestParam @Min(1) int currentPage,
+            @RequestParam @Min(1) int pageSize
+    ) {
+        if (currentPage < 1 || pageSize < 1) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        PaginationResponse response = productService.getAllPagination(currentPage, pageSize);
+        return ResponseEntity.ok(response);
+    }
 
 }

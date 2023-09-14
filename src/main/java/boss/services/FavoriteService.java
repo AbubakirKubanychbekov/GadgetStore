@@ -13,4 +13,6 @@ public interface FavoriteService {
 
 
     FavoriteResponse getFavoriteById(Long id);
+
+    SimpleResponse deleteFavorite(Long id);
 }

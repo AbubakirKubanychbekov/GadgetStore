@@ -1,9 +1,10 @@
 package boss.dto.request;
 
-import boss.validation.EmailValidation;
+import boss.enums.Role;
+import jakarta.validation.constraints.Email;
 
 public record AuthRequest(
-        @EmailValidation
+        @Email
         String email,
         String password) {
 }

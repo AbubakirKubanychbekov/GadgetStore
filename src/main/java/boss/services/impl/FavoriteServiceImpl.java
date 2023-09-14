@@ -42,7 +42,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         User user = userRepo.getUserByEmail(email).orElseThrow(() ->
                 new NotFoundException("User with email: " + email + " not found"));
-        Product product = productRepo.findById(productId).orElseThrow(() ->
+        Product product = productRepo.findProductById(productId).orElseThrow(() ->
                 new NotFoundException("Product with id: " + productId + " not found"));
         Favorite favorite=favoriteRequest.build();
         favorite.setProduct(product);
@@ -62,6 +62,19 @@ public class FavoriteServiceImpl implements FavoriteService {
         return favoriteRepo.findFavoriteById(id).orElseThrow(() ->
                 new NotFoundException("Favorite with id: " + id + " not found"));
 
+    }
+
+    @Override
+    public SimpleResponse deleteFavorite(Long id) {
+        if (!favoriteRepo.existsById(id)){
+            throw new NotFoundException("Favorite with id: "+id+" not found");
+        }
+        favoriteRepo.deleteById(id);
+        log.info("Favorite is deleted");
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Favorite with id: "+id+" is D e l e t e d")
+                .build();
     }
 
 //    @Override

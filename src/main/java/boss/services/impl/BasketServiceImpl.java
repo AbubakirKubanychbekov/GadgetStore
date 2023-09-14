@@ -22,8 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class BasketServiceImpl implements BasketService {
-    private final UserRepo userRepo;
 
+    private final UserRepo userRepo;
     private final BasketRepo basketRepo;
     private final ProductRepo productRepo;
 
@@ -33,7 +33,7 @@ public class BasketServiceImpl implements BasketService {
         User user = userRepo.getUserByEmail(email).orElseThrow(() -> new NotFoundException("User with email: %s not found".formatted(email)));
         List<Product> products = new ArrayList<>();
         for (Long l : productId) {
-            products.add(productRepo.findById(l).orElseThrow(
+            products.add(productRepo.findProductById(l).orElseThrow(
                     () -> new NotFoundException("User with id: %s not found".formatted(l))
             ));
         }
@@ -43,11 +43,12 @@ public class BasketServiceImpl implements BasketService {
                 .user(user)
                 .build();
         basketRepo.save(basket);
-
+        log.info("Basket successfully S a v e d");
         return SimpleResponse
                 .builder()
                 .message("Products successfully saved")
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
+
 }

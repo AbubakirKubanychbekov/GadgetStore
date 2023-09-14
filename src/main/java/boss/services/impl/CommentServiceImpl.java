@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         String email = authentication.getName();
         User user = userRepo.getUserByEmail(email).orElseThrow(() ->
                 new RuntimeException("User with email: " + email + " not found"));
-        Product product = productRepo.findById(productId).orElseThrow(() ->
+        Product product = productRepo.findProductById(productId).orElseThrow(() ->
                 new NotFoundException("Product with id: " + productId + " not found"));
         Comment comment = commentRequest.build();
         comment.setProduct(product);
@@ -81,7 +81,7 @@ public class CommentServiceImpl implements CommentService {
        log.info("Comment is deleted!");
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
-                .message("Comment is deleted")
+                .message("Comment is D e l e t e d")
                 .build();
     }
 

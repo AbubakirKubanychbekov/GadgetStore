@@ -22,8 +22,7 @@ import java.util.NoSuchElementException;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity
-
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final UserRepo userRepo;

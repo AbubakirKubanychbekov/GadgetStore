@@ -2,10 +2,14 @@ package boss.api;
 
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.services.BasketService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -19,7 +23,9 @@ public class BasketApi {
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "Save",description = "To save  fill all the fields!")
     SimpleResponse saveBasket(@RequestParam List<Long> productIds) {
         return basketService.saveBasket(productIds);
     }
+
 }

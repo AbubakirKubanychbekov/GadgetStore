@@ -1,9 +1,6 @@
 package boss.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -19,6 +16,22 @@ public class Basket extends BaseEntity {
     @ManyToMany
     private List<Product>products;
 
+
+
     @OneToOne
     private User user;
+
+    @Column(name = "quantity", nullable = false, columnDefinition = "integer default 0")
+    private int quantity;
+
+
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
 }

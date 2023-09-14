@@ -1,7 +1,6 @@
 package boss.dto.response;
 
 import boss.enums.Category;
-import jakarta.persistence.ElementCollection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +32,10 @@ public class ProductResponse {
     private Category category;
 
     private String comment;
+    private String brand;
 
-    public ProductResponse(Long id, String name, BigDecimal price, String characteristic, boolean isFavorite, String madeIn, Category category) {
+
+    public ProductResponse(Long id, String name, BigDecimal price, String characteristic, boolean isFavorite, String madeIn, Category category, List<String> images) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -42,6 +43,19 @@ public class ProductResponse {
         this.isFavorite = isFavorite;
         this.madeIn = madeIn;
         this.category = category;
+        this.images = images;
         this.comment = comment;
     }
+
+    public ProductResponse(Long id, String name, BigDecimal price, List<String> images, String characteristic, boolean isFavorite, String madeIn, Category category) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.images = images;
+        this.characteristic = characteristic;
+        this.isFavorite = isFavorite;
+        this.madeIn = madeIn;
+        this.category = category;
+    }
+
 }

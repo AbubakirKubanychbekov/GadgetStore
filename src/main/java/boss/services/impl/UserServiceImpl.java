@@ -90,21 +90,16 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new BadCredentialsException("Wrong password!");
         }
-          String jwtToken = jwtService.generateToken(user);
+        Role role = user.getRole();
+        String jwtToken = jwtService.generateToken(user);
 
         return AuthResponse.builder()
                 .email(user.getEmail())
                 .token(jwtToken)
+                .role(role)
                 .build();
     }
 
-//    @Override
-//    public UserResponse getUserById(Long id) {
-//        return userRepo.getUserById(id).orElseThrow(()->{
-//          String message= "User with id: "+id+" N o t f o u n d ";
-//          log.error(message);
-//          return new NotFoundException(message);
-//        });
-//    }
+
 
 }

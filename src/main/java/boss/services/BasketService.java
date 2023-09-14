@@ -7,4 +7,5 @@ import java.util.List;
 public interface BasketService {
 
     SimpleResponse saveBasket(List<Long> productId);
+
 }

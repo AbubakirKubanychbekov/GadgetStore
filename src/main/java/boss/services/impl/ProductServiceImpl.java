@@ -1,6 +1,7 @@
 package boss.services.impl;
 
 import boss.dto.request.ProductRequest;
+import boss.dto.response.PaginationResponse;
 import boss.dto.response.ProductResponse;
 import boss.dto.response.ProductWithCommentsResponse;
 import boss.dto.simpleResponse.SimpleResponse;
@@ -14,10 +15,14 @@ import boss.repo.ProductRepo;
 import boss.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,9 +35,17 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepo brandRepo;
     private final CommentRepo commentRepo;
 
+
+    // Get all products иштебей жатат
+//    @Override
+//    public List<ProductResponse> getAllByImages() {
+//        return productRepo.getAllByImages();
+//    }
+
+
     @Override
     public List<ProductResponse> getAllProducts() {
-        return productRepo.getAllProducts();
+        return productRepo.getAllByImages();
     }
 
     @Override
@@ -92,29 +105,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductWithCommentsResponse getProductByIdAndComments(Long id) {
-
-        Product product = productRepo.findById(id).orElseThrow(() ->
-                new NotFoundException("Product with id: " + id + " not found"));
-
-        // Создать объект ProductResponse и заполнить его данными о товаре
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setId(product.getId());
-        productResponse.setName(product.getName());
-        productResponse.setPrice(product.getPrice());
-        productResponse.setImages(product.getImages());
-        productResponse.setCharacteristic(product.getCharacteristic());
-        productResponse.setFavorite(true); // Предположим, что это фиктивное значение для "избранного"
-        productResponse.setMadeIn(product.getMadeIn());
-        productResponse.setCategory(product.getCategory());
-
-        // Получить все комментарии для данного продукта
-        List<Comment> comments = commentRepo.findAllByProductId(id);
-
-        // Создать объект ProductWithCommentsResponse и установить в него ProductResponse и список комментариев
-        ProductWithCommentsResponse response = new ProductWithCommentsResponse(productResponse, comments);
-
-        return response;
-
+    public SimpleResponse deleteProduct(Long id) {
+       if (!productRepo.existsById(id)){
+           throw new NotFoundException("Product with id: "+id+ "not found");
+       }
+       productRepo.deleteById(id);
+       log.info("Product is deleted");
+        return SimpleResponse.builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Product with id: "+id+" is D e l e t e d")
+                .build();
     }
+
+    @Override
+    public PaginationResponse getAllPagination(int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage-1,pageSize);
+        Page<ProductResponse> products= productRepo.findAllProducts(pageable);
+        return PaginationResponse.builder()
+                .t(Collections.singletonList(products.getContent()))
+                .currentPage(products.getNumber())
+                .pageSize(products.getTotalPages())
+                .build();
+    }
+
 }

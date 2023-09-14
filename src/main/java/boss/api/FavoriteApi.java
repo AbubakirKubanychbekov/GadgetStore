@@ -4,8 +4,11 @@ import boss.dto.request.FavoriteRequest;
 import boss.dto.response.FavoriteResponse;
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.services.FavoriteService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,20 +21,24 @@ public class FavoriteApi {
 
     private final FavoriteService favoriteService;
 
+    @PermitAll
     @GetMapping
+    @Operation(summary = "Get All",description = "Get All favorite info")
     public List<FavoriteResponse> findAllFavorites(){
         return favoriteService.findAllFavorites();
     }
 
+    @Secured({"ADMIN","USER"})
     @PostMapping("/{productId}")
+    @Operation(summary = "Save",description = "To save  fill all the fields!")
     public SimpleResponse save(@PathVariable Long productId,
                                @RequestBody FavoriteRequest favoriteRequest){
         return favoriteService.save(productId,favoriteRequest);
     }
 
-//    @GetMapping("/{id}")
-//    public FavoriteResponse getFavoriteById(@PathVariable Long id){
-//        return favoriteService.getFavoriteById(id);
-//    }
-
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleted",description = "To delete  fill all the fields!")
+    public SimpleResponse deleteFavorite(@PathVariable Long id){
+        return favoriteService.deleteFavorite(id);
+    }
 }

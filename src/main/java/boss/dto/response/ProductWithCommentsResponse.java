@@ -11,10 +11,14 @@ import java.util.List;
 public class ProductWithCommentsResponse {
     private ProductResponse productResponse;
     private List<Comment> comments;
+    private int commentCount;
 
 
     public ProductWithCommentsResponse(ProductResponse productResponse, List<Comment> comments) {
         this.productResponse = productResponse;
         this.comments = comments;
+        this.commentCount = comments.size();
+
+
     }
 }
