@@ -22,23 +22,18 @@ public class FavoriteApi {
     private final FavoriteService favoriteService;
 
     @PermitAll
-    @GetMapping
     @Operation(summary = "Get All",description = "Get All favorite info")
-    public List<FavoriteResponse> findAllFavorites(){
-        return favoriteService.findAllFavorites();
+    @GetMapping("/{id}")
+    public List<FavoriteResponse> findAllFavorites(@PathVariable Long id){
+        return favoriteService.findAllFavorites(id);
     }
 
     @Secured({"ADMIN","USER"})
     @PostMapping("/{productId}")
     @Operation(summary = "Save",description = "To save  fill all the fields!")
-    public SimpleResponse save(@PathVariable Long productId,
-                               @RequestBody FavoriteRequest favoriteRequest){
-        return favoriteService.save(productId,favoriteRequest);
+    public SimpleResponse save(@PathVariable Long productId){
+        return favoriteService.save(productId);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Deleted",description = "To delete  fill all the fields!")
-    public SimpleResponse deleteFavorite(@PathVariable Long id){
-        return favoriteService.deleteFavorite(id);
-    }
+
 }

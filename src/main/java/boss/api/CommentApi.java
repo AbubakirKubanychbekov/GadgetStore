@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class CommentApi {
         return commentService.findAllComments();
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PermitAll
     @PostMapping("/{productId}")
     @Operation(summary = "Save",description = "To save  fill all the fields!")
     public CommentResponse save(@RequestBody CommentRequest commentRequest,
@@ -37,7 +36,7 @@ public class CommentApi {
         return commentService.save(commentRequest, productId);
     }
 
-    @Secured({"USER","ADMIN"})
+    @PermitAll
     @GetMapping("/{id}")
     @Operation(summary = "Get comment by ID",description = "To get by ID fill ID!")
     public CommentResponse findById(@PathVariable Long id) {

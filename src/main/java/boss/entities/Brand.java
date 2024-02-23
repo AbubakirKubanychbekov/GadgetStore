@@ -1,8 +1,6 @@
 package boss.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -19,7 +17,7 @@ public class Brand extends BaseEntity{
 
     private String image;
 
-    @OneToMany(mappedBy = "brand")
+    @OneToMany(mappedBy = "brand",cascade = CascadeType.ALL)
     private List<Product>products;
 
 }

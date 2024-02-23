@@ -1,5 +1,6 @@
 package boss.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,25 +14,12 @@ import java.util.List;
 @Builder
 public class Basket extends BaseEntity {
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Product>products;
 
 
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @Column(name = "quantity", nullable = false, columnDefinition = "integer default 0")
-    private int quantity;
-
-
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 
 }

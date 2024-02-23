@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         String email = authentication.getName();
         User user = userRepo.getUserByEmail(email).orElseThrow(() ->
                 new RuntimeException("User with email: " + email + " not found"));
-        Product product = productRepo.findProductById(productId).orElseThrow(() ->
+        Product product = productRepo.findById(productId).orElseThrow(() ->
                 new NotFoundException("Product with id: " + productId + " not found"));
         Comment comment = commentRequest.build();
         comment.setProduct(product);
@@ -55,7 +55,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponse findCommentById(Long id) {
-        return commentRepo.findCommentById(id);
+        return commentRepo.findCommentById(id).orElseThrow(()->
+                new NotFoundException("Comment with id: %s not found".formatted(id)));
     }
 
 

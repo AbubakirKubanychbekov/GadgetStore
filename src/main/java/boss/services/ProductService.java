@@ -1,25 +1,27 @@
 package boss.services;
 
 import boss.dto.request.ProductRequest;
-import boss.dto.response.PaginationResponse;
 import boss.dto.response.ProductResponse;
 import boss.dto.simpleResponse.SimpleResponse;
+import boss.entities.Product;
+import boss.enums.Category;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<ProductResponse> getAllProducts();
+    List<ProductResponse> getAllProducts(String ascOrDesc, Category category);
 
     SimpleResponse save(ProductRequest productRequest, Long brandId);
+    ProductResponse getProductById(Long id);
 
     SimpleResponse update(Long id, ProductRequest productRequest);
 
-    ProductResponse getProductById(Long id);
+
     SimpleResponse deleteProduct(Long id);
 
-    PaginationResponse getAllPagination(int currentPage, int pageSize);
-
-
+    List<ProductResponse> findAllProducts();
 
 }
+
+

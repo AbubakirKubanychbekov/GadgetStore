@@ -1,6 +1,6 @@
 package boss.entities;
 
-import boss.dto.response.CommentResponse;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -21,10 +21,10 @@ public class Comment extends BaseEntity{
 
     private LocalDate createdEt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 
 

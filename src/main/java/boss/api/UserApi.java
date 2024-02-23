@@ -28,7 +28,6 @@ public class UserApi {
     @Operation(summary = "Sign Up", description = "To sign up fill all the fields!")
     public ResponseEntity<SimpleResponse> signUp(@RequestBody @Valid @ApiParam(value = "User registration request") UserRequest userRequest) {
         return ResponseEntity.ok(userService.signUp(userRequest));
-
     }
 
 
@@ -38,11 +37,5 @@ public class UserApi {
     public AuthResponse signIn(@RequestBody @Valid AuthRequest signInRequest){
         return userService.signIn(signInRequest);
     }
-
-//
-//    @GetMapping("/{id}")
-//    public UserResponse getUserById(@PathVariable Long id){
-//        return userService.getUserById(id);
-//    }
 
 }

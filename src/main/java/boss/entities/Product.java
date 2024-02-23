@@ -1,6 +1,7 @@
 package boss.entities;
 
 import boss.enums.Category;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
 public class Product extends BaseEntity{
 
     private String name;
@@ -33,26 +33,20 @@ public class Product extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private Category category;
 
-//    @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 
-//    @ToString.Exclude
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(mappedBy = "products", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Basket>baskets;
 
-//    @ToString.Exclude
-    @OneToMany(mappedBy = "product")
-    private List<Comment>comments;
-
-//    @ToString.Exclude
-    @OneToMany(mappedBy = "product")
-    private List<Favorite>favorites;
+    @OneToMany(mappedBy = "product",
+    fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
 
-
-
-
+    @OneToMany(mappedBy = "product",
+    fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Favorite> favorites;
 
 
 

@@ -1,16 +1,14 @@
 package boss.api;
 
 import boss.dto.request.ProductRequest;
-import boss.dto.response.PaginationResponse;
 import boss.dto.response.ProductResponse;
 import boss.dto.simpleResponse.SimpleResponse;
+import boss.enums.Category;
 import boss.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,21 +23,22 @@ public class ProductApi {
 
     private final ProductService productService;
 
-    @GetMapping("/getAll")  //  Такыр иштебей жатат
+    @GetMapping("/AscOrDescCategory")
     @PermitAll
-    @Operation(summary = "Get All",description = "Get All products info")
-    public List<ProductResponse> findAllProducts() {
-        return productService.getAllProducts();
+    @Operation(summary = "Asc or Desc for Product",description = "Write in descending order")
+    public List<ProductResponse> findAllProducts(@RequestParam String ascOrDesc,
+                                                 @RequestParam Category category) {
+        return productService.getAllProducts(ascOrDesc,category);
     }
 
 
-//    @GetMapping("/getAll")
-//    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-//        System.out.println("hello");
-//        List<ProductResponse> products = productService.getAllProducts();
-//        System.out.println("hello2");
-//        return new ResponseEntity<>(products, HttpStatus.OK);
-//    }
+    @GetMapping("/findAll")
+    @PermitAll
+    @Operation(summary = "Get All",description = "Get All favorite info")
+    public List<ProductResponse> findAll(){
+        return productService.findAllProducts();
+    }
+
 
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -52,7 +51,7 @@ public class ProductApi {
 
 
     @GetMapping("/{id}")
-    @Secured({"USER","ADMIN"})
+    @PermitAll
     @Operation(summary = "Get product by ID",description = "To get by ID fill ID!")
     public ProductResponse getById(@PathVariable Long id) {
         return productService.getProductById(id);
@@ -71,22 +70,6 @@ public class ProductApi {
     @Operation(summary = "Deleted",description = "To delete  fill all the fields!")
     public SimpleResponse deleteProduct(@PathVariable Long id){
         return productService.deleteProduct(id);
-    }
-
-
-    @PermitAll
-    @GetMapping("/pagination")
-    @Operation(summary = "Pagination",description = "To pagination!")
-    public ResponseEntity<PaginationResponse> paginationResponse(
-            @RequestParam @Min(1) int currentPage,
-            @RequestParam @Min(1) int pageSize
-    ) {
-        if (currentPage < 1 || pageSize < 1) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        PaginationResponse response = productService.getAllPagination(currentPage, pageSize);
-        return ResponseEntity.ok(response);
     }
 
 }

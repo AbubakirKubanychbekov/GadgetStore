@@ -1,7 +1,6 @@
 package boss.entities;
 
 import boss.enums.Role;
-import boss.exception.NotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,10 +36,10 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne
     private Basket basket;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Favorite>favorites;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Comment>comments;
 
 

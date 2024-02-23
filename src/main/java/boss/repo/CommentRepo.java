@@ -16,7 +16,7 @@ public interface CommentRepo extends JpaRepository<Comment,Long> {
     @Query("select new boss.dto.response.CommentResponse(c.id,c.comment) from Comment c")
     List<CommentResponse> findAllComments();
 
-    CommentResponse findCommentById(Long id);
+    Optional<CommentResponse> findCommentById(Long id);
 
 
     @Query("SELECT new boss.dto.response.CommentResponse(c.id, c.comment) FROM Comment c WHERE c.comment = :comment")

@@ -1,19 +1,20 @@
 package boss.dto.response;
 
-import boss.entities.Product;
-import boss.entities.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 
 @Builder
-public record FavoriteResponse(
-        Long id,
-        Product product,
-        User user
-) {
-    public FavoriteResponse(Long id, Product product, User user) {
-        this.id = id;
-        this.product = product;
-        this.user = user;
-    }
+@Data
+public class FavoriteResponse {
+  private  Long id;
+  private  String product;
+  private  String user;
+
+
+  public FavoriteResponse(Long id, String product, String user) {
+    this.id = id;
+    this.product = product;
+    this.user = user;
+  }
+
 }

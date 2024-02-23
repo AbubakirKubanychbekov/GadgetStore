@@ -3,9 +3,11 @@ package boss.services.impl;
 import boss.dto.request.AuthRequest;
 import boss.dto.request.UserRequest;
 import boss.dto.response.AuthResponse;
+import boss.dto.response.UserResponse;
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.entities.User;
 import boss.enums.Role;
+import boss.exception.NotFoundException;
 import boss.repo.UserRepo;
 import boss.security.JwtService;
 import boss.services.UserService;
@@ -80,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse signIn(AuthRequest request) {
+    public AuthResponse  signIn(AuthRequest request) {
         User user = userRepo.getUserByEmail(request.email()).orElseThrow(() ->
                 new EntityNotFoundException("User with email: " + request.email() + " not found"));
 
@@ -99,7 +101,6 @@ public class UserServiceImpl implements UserService {
                 .role(role)
                 .build();
     }
-
 
 
 }

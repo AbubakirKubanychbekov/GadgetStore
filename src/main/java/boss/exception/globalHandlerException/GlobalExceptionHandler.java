@@ -2,6 +2,7 @@ package boss.exception.globalHandlerException;
 
 import boss.exception.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -60,6 +61,12 @@ public class GlobalExceptionHandler {
                 .exceptionClassName(e.getClass().getSimpleName())
                 .message(e.getMessage())
                 .build();
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String errorMessage = "Ошибка: электронная почта уже существует.";
+        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
     }
 
 

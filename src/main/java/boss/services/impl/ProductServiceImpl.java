@@ -1,13 +1,11 @@
 package boss.services.impl;
 
 import boss.dto.request.ProductRequest;
-import boss.dto.response.PaginationResponse;
 import boss.dto.response.ProductResponse;
-import boss.dto.response.ProductWithCommentsResponse;
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.entities.Brand;
-import boss.entities.Comment;
 import boss.entities.Product;
+import boss.enums.Category;
 import boss.exception.NotFoundException;
 import boss.repo.BrandRepo;
 import boss.repo.CommentRepo;
@@ -15,14 +13,10 @@ import boss.repo.ProductRepo;
 import boss.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -36,17 +30,31 @@ public class ProductServiceImpl implements ProductService {
     private final CommentRepo commentRepo;
 
 
-    // Get all products иштебей жатат
-//    @Override
-//    public List<ProductResponse> getAllByImages() {
-//        return productRepo.getAllByImages();
-//    }
-
-
     @Override
-    public List<ProductResponse> getAllProducts() {
-        return productRepo.getAllByImages();
+    public List<ProductResponse> getAllProducts(String ascOrDesc, Category category) {
+        if (ascOrDesc.equalsIgnoreCase("asc") || ascOrDesc.equalsIgnoreCase("desc")) {
+            if (ascOrDesc.equalsIgnoreCase("asc")) {
+                log.info("first method run");
+                List<ProductResponse> allByCategoryAndPriceAsc = productRepo.findAllByCategoryAndPriceAsc(category);
+                for (ProductResponse p : allByCategoryAndPriceAsc) {
+                    p.setImages(productRepo.getImages(p.getId()));
+
+                }
+                return allByCategoryAndPriceAsc;
+            } else if (ascOrDesc.equalsIgnoreCase("desc")) {
+                log.info("second method run");
+                List<ProductResponse> allByCategoryAndPriceDesc = productRepo.findAllByCategoryAndPriceDesc(category);
+                for (ProductResponse p : allByCategoryAndPriceDesc) {
+                    p.setImages(productRepo.getImages(p.getId()));
+                }
+                return allByCategoryAndPriceDesc;
+            }
+        } else {
+            throw new NotFoundException("Input wrong correctly(asc,desc)");
+        }
+        return null;
     }
+
 
     @Override
     public SimpleResponse save(ProductRequest productRequest, Long brandId) {
@@ -90,18 +98,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getProductById(Long id) {
-        Product product = productRepo.findById(id).orElseThrow(() ->
+        ProductResponse productResponse = productRepo.getProductById(id).orElseThrow(() ->
                 new NotFoundException("Product with id: " + id + " not found"));
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setId(product.getId());
-        productResponse.setName(product.getName());
-        productResponse.setPrice(product.getPrice());
-        productResponse.setImages(product.getImages());
-        productResponse.setCharacteristic(product.getCharacteristic());
-        productResponse.setFavorite(true);
-        productResponse.setMadeIn(product.getMadeIn());
-        productResponse.setCategory(product.getCategory());
+
+        System.out.println("productResponse.getId() = " + productResponse.getId());
+        List<String> images = productRepo.getImages(id);
+        images.forEach(System.out::println);
+        productResponse.setImages(images);
         return productResponse;
+    }
+
+
+    @Override
+    public List<ProductResponse> findAllProducts() {
+        List<ProductResponse> allProducts = productRepo.findAllProducts();
+        for (ProductResponse prod : allProducts) {
+            prod.setImages(productRepo.getImages(prod.getId()));
+        }
+        return allProducts;
     }
 
     @Override
@@ -117,15 +131,5 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
-    @Override
-    public PaginationResponse getAllPagination(int currentPage, int pageSize) {
-        Pageable pageable = PageRequest.of(currentPage-1,pageSize);
-        Page<ProductResponse> products= productRepo.findAllProducts(pageable);
-        return PaginationResponse.builder()
-                .t(Collections.singletonList(products.getContent()))
-                .currentPage(products.getNumber())
-                .pageSize(products.getTotalPages())
-                .build();
-    }
 
 }

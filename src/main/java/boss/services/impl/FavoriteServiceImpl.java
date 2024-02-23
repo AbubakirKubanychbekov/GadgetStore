@@ -1,6 +1,5 @@
 package boss.services.impl;
 
-import boss.dto.request.FavoriteRequest;
 import boss.dto.response.FavoriteResponse;
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.entities.Favorite;
@@ -30,21 +29,30 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final UserRepo userRepo;
 
     @Override
-    public List<FavoriteResponse> findAllFavorites() {
-        return favoriteRepo.findAllFavorites();
+    public List<FavoriteResponse> findAllFavorites(Long id) {
+        return favoriteRepo.findAllFavorites(id);
     }
 
 
     @Override
-    public SimpleResponse save(Long productId, FavoriteRequest favoriteRequest) {
+    public SimpleResponse save(Long productId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email= authentication.getName();
 
         User user = userRepo.getUserByEmail(email).orElseThrow(() ->
                 new NotFoundException("User with email: " + email + " not found"));
-        Product product = productRepo.findProductById(productId).orElseThrow(() ->
+        Product product = productRepo.findById(productId).orElseThrow(() ->
                 new NotFoundException("Product with id: " + productId + " not found"));
-        Favorite favorite=favoriteRequest.build();
+
+        List<Favorite> favoriteRepoAll = favoriteRepo.findAll();
+        for (Favorite f: favoriteRepoAll){
+            if (f.getUser().equals(user) && f.getProduct().equals(product)){
+                favoriteRepo.deleteById(f.getId());
+            }
+        }
+
+        Favorite favorite=new Favorite();
+        favorite.setUser(user);
         favorite.setProduct(product);
         user.addFavorite(favorite);
         favoriteRepo.save(favorite);
@@ -56,31 +64,5 @@ public class FavoriteServiceImpl implements FavoriteService {
 
 
     }
-
-    @Override
-    public FavoriteResponse getFavoriteById(Long id) {
-        return favoriteRepo.findFavoriteById(id).orElseThrow(() ->
-                new NotFoundException("Favorite with id: " + id + " not found"));
-
-    }
-
-    @Override
-    public SimpleResponse deleteFavorite(Long id) {
-        if (!favoriteRepo.existsById(id)){
-            throw new NotFoundException("Favorite with id: "+id+" not found");
-        }
-        favoriteRepo.deleteById(id);
-        log.info("Favorite is deleted");
-        return SimpleResponse.builder()
-                .httpStatus(HttpStatus.OK)
-                .message("Favorite with id: "+id+" is D e l e t e d")
-                .build();
-    }
-
-//    @Override
-//    public FavoriteResponse getFavoriteById(Long id) {
-//        return favoriteRepo.getFavoriteById(id).orElseThrow(()->
-//                new NotFoundException(String.format("Favorite with id: %s not found",id)));
-//    }
 
 }

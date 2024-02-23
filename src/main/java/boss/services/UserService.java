@@ -14,6 +14,5 @@ public interface UserService {
 
     AuthResponse signIn(AuthRequest request);
 
-//    UserResponse getUserById(Long id);
 
 }

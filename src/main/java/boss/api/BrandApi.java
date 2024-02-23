@@ -4,8 +4,6 @@ import boss.dto.request.BrandRequest;
 import boss.dto.response.BrandResponse;
 import boss.dto.simpleResponse.SimpleResponse;
 import boss.services.BrandService;
-
-
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;

@@ -4,6 +4,7 @@ import boss.dto.simpleResponse.SimpleResponse;
 import boss.entities.Basket;
 import boss.entities.Product;
 import boss.entities.User;
+import boss.exception.BadRequestException;
 import boss.exception.NotFoundException;
 import boss.repo.BasketRepo;
 import boss.repo.ProductRepo;
@@ -33,8 +34,8 @@ public class BasketServiceImpl implements BasketService {
         User user = userRepo.getUserByEmail(email).orElseThrow(() -> new NotFoundException("User with email: %s not found".formatted(email)));
         List<Product> products = new ArrayList<>();
         for (Long l : productId) {
-            products.add(productRepo.findProductById(l).orElseThrow(
-                    () -> new NotFoundException("User with id: %s not found".formatted(l))
+            products.add(productRepo.findById(l).orElseThrow(
+                    () -> new BadRequestException("User with id: %s not found".formatted(l))
             ));
         }
         Basket basket = Basket

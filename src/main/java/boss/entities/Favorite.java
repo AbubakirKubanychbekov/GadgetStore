@@ -1,8 +1,6 @@
 package boss.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -13,10 +11,11 @@ import lombok.*;
 @Builder
 public class Favorite extends BaseEntity{
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Product product;
 
 }
